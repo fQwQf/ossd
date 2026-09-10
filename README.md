@@ -73,7 +73,7 @@ docker compose exec backend node run_graphql_backfill.js 30
 | [快速开始](docs/getting-started.md) | Docker Compose、本机开发和数据库初始化 |
 | [界面导览](docs/screenshots.md) | 组织概览、趋势、仓库洞察和贡献者界面 |
 | [架构与数据口径](docs/architecture.md) | 技术栈、数据链路、仓库归属和统计规则 |
-| [API 参考](docs/api.md) | 组织、SIG、仓库、贡献者和导出接口 |
+| [API 参考](docs/api.md) | 按核心数据、分析、贡献者、详情和导出分类的完整接口与参数 |
 | [运行与维护](docs/operations.md) | 迁移、回填、重聚合、缓存和故障排查 |
 
 ## 开发验证
