@@ -42,19 +42,27 @@ test('filters bots while preserving human contributor order and objects', () => 
         bob,
     ];
 
-    assert.deepEqual(filterBotContributors(contributors), [alice, bob]);
+    const filteredContributors = filterBotContributors(contributors);
+
+    assert.deepEqual(filteredContributors, [alice, bob]);
+    assert.strictEqual(filteredContributors[0], alice);
+    assert.strictEqual(filteredContributors[1], bob);
 });
 
 test('builds the SQL conditions used to exclude bot contributors', () => {
     const condition = buildHumanContributorSqlCondition();
+    const botUsernameLiterals = BOT_CONTRIBUTOR_USERNAMES
+        .map((username) => `'${username.replace(/'/g, "''")}'`)
+        .join(', ');
 
-    assert.match(condition, /^LOWER\(c\.github_username\) NOT LIKE '%\[bot\]'/);
-    assert.match(condition, /LOWER\(c\.github_username\) NOT IN \(/);
-    for (const username of BOT_CONTRIBUTOR_USERNAMES) {
-        assert.match(condition, new RegExp(`'${username.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}'`));
-    }
+    assert.equal(
+        condition,
+        `LOWER(c.github_username) NOT LIKE '%[bot]' AND LOWER(c.github_username) NOT IN (${botUsernameLiterals})`,
+    );
 
     const customCondition = buildHumanContributorSqlCondition('author.login');
-    assert.match(customCondition, /^LOWER\(author\.login\) NOT LIKE '%\[bot\]'/);
-    assert.match(customCondition, /LOWER\(author\.login\) NOT IN \(/);
+    assert.equal(
+        customCondition,
+        `LOWER(author.login) NOT LIKE '%[bot]' AND LOWER(author.login) NOT IN (${botUsernameLiterals})`,
+    );
 });
